@@ -176,6 +176,8 @@ void main()
   char w1, w0, f1, f2;
   int led = 0;
   int counter = 0;
+  int timer = 0;
+  int blink = 0;
 
 	int tare_triggered = 0;
 	int stable_tare = 0;
@@ -302,8 +304,10 @@ void main()
 			calib_triggered = 0;
 			stable_calib = 0;
 		}
+
     if(calib_mode == 1)
     {
+      blink = 1;
       led = 2;
 
       // Exit Calib Mode
@@ -315,6 +319,7 @@ void main()
           calib = calib_temp;
           write4B(0xFFF4, calib);
 			  	calib_mode = 0;
+          blink = 0;
 				  stable_unit = 0;
           led = 0;
   				unit_trig = 1;
@@ -396,32 +401,94 @@ void main()
     }
 
     // Display Weight
-    switch(counter)
+    /* if(blink == 1)
     {
-      case 0:
-        display_digit(w1, 3, 0);
-        counter++;
-        break;
-      case 1:
-        display_digit(w0, 2, 1);
-        counter++;
-        break;
-      case 2:
-        display_digit(f1, 1, 0);
-        counter++;
-        break;
-      case 3:
-        display_digit(f2, 0, 0);
-        counter++;
-        break;
-      case 4:
-        LED_Control(led);
-        counter = 0;
-        break;
+      timer++;
+      if(timer <= 2000)
+      {
+        switch(counter)
+        {
+          case 0:
+            display_digit(w1, 3, 0);
+            counter++;
+            break;
+          case 1:
+            display_digit(w0, 2, 1);
+            counter++;
+            break;
+          case 2:
+            display_digit(f1, 1, 0);
+            counter++;
+            break;
+          case 3:
+            display_digit(f2, 0, 0);
+            counter++;
+            break;
+          case 4:
+            LED_Control(led);
+            counter = 0;
+            break;
+        }
+      } else
+      {
+        switch(counter)
+        {
+          case 0:
+            display_digit(' ', 3, 0);
+            counter++;
+            break;
+          case 1:
+            display_digit(' ', 2, 1);
+            counter++;
+            break;
+          case 2:
+            display_digit(' ', 1, 0);
+            counter++;
+            break;
+          case 3:
+            display_digit(' ', 0, 0);
+            counter++;
+            break;
+          case 4:
+            LED_Control(led);
+            counter = 0;
+            break;
+        }
+        if(timer == 4000)
+        {
+          timer = 0;
+        }
+      }
+    } else  */
+    {
+      switch(counter)
+      {
+        case 0:
+          display_digit(w1, 3, 0);
+          counter++;
+          break;
+        case 1:
+          display_digit(w0, 2, 1);
+          counter++;
+          break;
+        case 2:
+          display_digit(f1, 1, 0);
+          counter++;
+          break;
+        case 3:
+          display_digit(f2, 0, 0);
+          counter++;
+          break;
+        case 4:
+          LED_Control(led);
+          counter = 0;
+          break;
+      }
     }
 	}
 }
 /*
+// Timer interrupt for display multiplexing
 void TIM4_Init_Multiplexer(void)
 {
   TIM4_DeInit();

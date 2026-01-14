@@ -1,23 +1,32 @@
 # Weighing Balance System
 ## in STM8S on custom PCB
+
+## Features
+- **4 Buttons:** Tare, Down, Up, Set
+- **Tare:** Zeroes the scale
+- **Calibration mode:**
+    - Enter by pressing both **Down** and **Up** together
+    - Decrease by pressing **Down** and increase by pressing **Up**
+    - Save and Exit by pressing **Set**
+    - Restore last saved calibration value using **Tare** 
+
 ---
+
 ## Current State
 
-- Fetching tare from EEPROM: Attempt 1 (Failure) 
-- Interrupt-Based Display: Attempt 1 (Failure)
-- Calibration mode: On-going
-- Code is writing in FLASH memory. VERY IMPORTANT!!!
+- Fetching tare and calib values from EEPROM: Write works properly, only first byte is read properly
+- Calibration mode: Functional
+- Code is writing in Program memory. VERY IMPORTANT!!!
 
 ---
 
-### Calibration mode
-- Enter by pressing both cal_down and cal_up together
-- Decrease by pressing cal_down and increase by pressing cal_up
-- Exit by pressing button 4
-
-#### Try to implement 
+### To do
+- Tune display timer (the dummy time when no data is being fetched)
+- Fix EEPROM read
 - Blinking
-- Calibration while active reading. 
+- Interrupt-Based Display
+
+---
 
 ### EEPROM storing
 - Write works properly

@@ -1,0 +1,15 @@
+# Build outputs
+*.o
+*.ls
+*.elf
+*.map
+*.s19
+*.sm8
+
+# STVD workspace / IDE junk
+*.wdb
+*.wed
+
+# Build directories
+Debug/
+Release/
