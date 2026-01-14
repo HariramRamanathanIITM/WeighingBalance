@@ -46,14 +46,14 @@
 #define TARE_PORT       GPIOA
 #define TARE_PIN        GPIO_PIN_3
 
-#define CAL_UP_PORT     GPIOC
-#define CAL_UP_PIN      GPIO_PIN_2
+#define UP_PORT     		GPIOC
+#define UP_PIN      		GPIO_PIN_2
 
-#define CAL_DOWN_PORT   GPIOA
-#define CAL_DOWN_PIN    GPIO_PIN_4
+#define DOWN_PORT   		GPIOA
+#define DOWN_PIN    		GPIO_PIN_4
 
-#define UNIT_PORT       GPIOC
-#define UNIT_PIN        GPIO_PIN_1
+#define SET_PORT       	GPIOC
+#define SET_PIN        	GPIO_PIN_1
 
 #define DUMMY           GPIOD, GPIO_PIN_7
 
@@ -200,9 +200,9 @@ void main()
   GPIO_WriteLow(CLK_OUT);
 
 	GPIO_Init(TARE_PORT, TARE_PIN, GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(CAL_UP_PORT, CAL_UP_PIN, GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(CAL_DOWN_PORT, CAL_DOWN_PIN, GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(UNIT_PORT, UNIT_PIN, GPIO_MODE_IN_PU_NO_IT);
+  GPIO_Init(UP_PORT, UP_PIN, GPIO_MODE_IN_PU_NO_IT);
+  GPIO_Init(DOWN_PORT, DOWN_PIN, GPIO_MODE_IN_PU_NO_IT);
+  GPIO_Init(SET_PORT, SET_PIN, GPIO_MODE_IN_PU_NO_IT);
 
   GPIO_Init(DUMMY, GPIO_MODE_OUT_PP_HIGH_FAST);
   GPIO_WriteLow(DUMMY);
@@ -290,7 +290,7 @@ void main()
 		}
     
     // Enter Calibration mode
-    if (!(CAL_UP_PORT -> IDR & CAL_UP_PIN) & !(CAL_DOWN_PORT -> IDR & CAL_DOWN_PIN))
+    if (!(UP_PORT -> IDR & UP_PIN) & !(DOWN_PORT -> IDR & DOWN_PIN))
     {
 			if (stable_calib < 20) stable_calib ++;
 			if ((stable_calib == 20) && (!tare_triggered))
@@ -311,7 +311,7 @@ void main()
       led = 2;
 
       // Exit Calib Mode
-      if (!(UNIT_PORT -> IDR & UNIT_PIN))
+      if (!(SET_PORT -> IDR & SET_PIN))
       {
 			  if (stable_unit < 20) stable_unit ++;
 	  		if ((stable_unit == 20) && (!unit_trig))
@@ -343,7 +343,7 @@ void main()
 	  		tare_triggered = 0;
 		  	stable_tare = 0;
   		}
-      if (!(CAL_UP_PORT -> IDR & CAL_UP_PIN))
+      if (!(UP_PORT -> IDR & UP_PIN))
       {
         if (stable_calib_up < 20) stable_calib_up ++;
         if ((stable_calib_up == 20) && (!calib_up_trig))
@@ -358,7 +358,7 @@ void main()
         calib_up_trig = 0;
         stable_calib_up = 0;
       }
-      if (!(CAL_DOWN_PORT -> IDR & CAL_DOWN_PIN))
+      if (!(DOWN_PORT -> IDR & DOWN_PIN))
       {
         if (stable_calib_down < 20) stable_calib_down ++;
         if ((stable_calib_down == 20) && (!calib_down_trig))

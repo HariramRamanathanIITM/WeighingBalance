@@ -13,3 +13,20 @@
 # Build directories
 Debug/
 Release/
+
+*.ls
+*.dep
+*.lkf
+*.spy
+*.stw
+*.pdb
+*.asm
+*.html
+*.txt
+*.eww
+*.ewp
+*.ewd
+*.rapp
+*.rprj
+*.pdf
+*.chm

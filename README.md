@@ -11,14 +11,14 @@
     - Restore last saved calibration value using **Tare** 
 
 ---
+---
 
-## Current State
+### Progress Report
 
 - Fetching tare and calib values from EEPROM: Write works properly, only first byte is read properly
 - Calibration mode: Functional
 - Code is writing in Program memory. VERY IMPORTANT!!!
 
----
 
 ### To do
 - Tune display timer (the dummy time when no data is being fetched)
@@ -28,17 +28,12 @@
 
 ---
 
-### EEPROM storing
-- Write works properly
-- Only first byte is read correctly
-
 ### Interrupt Based Display Multiplexing
 - Interrupt pops when setting display parameter or clocking ADC
 - Minimize how much time interrupt function takes
 - Measure how long ADC reading takes
 - Flag to keep interrupt time in check
 - Maybe disable interrupt when fetching data
-
-### Measure how long ADC reading takes
-- Program an IO pin to pulse once at the start and then once more at the end of data fetch cycle
-- Very Important, helps a lot with display handling
+- Measure how long ADC reading takes
+    - Program an IO pin to pulse once at the start and then once more at the end of data fetch cycle
+    - Very Important, helps a lot with display handling
