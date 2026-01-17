@@ -46,14 +46,14 @@
 #define TARE_PORT       GPIOA
 #define TARE_PIN        GPIO_PIN_3
 
-#define CAL_UP_PORT     GPIOC
-#define CAL_UP_PIN      GPIO_PIN_2
+#define UP_PORT     		GPIOC
+#define UP_PIN      		GPIO_PIN_2
 
-#define CAL_DOWN_PORT   GPIOA
-#define CAL_DOWN_PIN    GPIO_PIN_4
+#define DOWN_PORT   		GPIOA
+#define DOWN_PIN    		GPIO_PIN_4
 
-#define UNIT_PORT       GPIOC
-#define UNIT_PIN        GPIO_PIN_1
+#define SET_PORT       	GPIOC
+#define SET_PIN        	GPIO_PIN_1
 
 #define DUMMY           GPIOD, GPIO_PIN_7
 
@@ -170,7 +170,8 @@ void main()
 	long res = 0;
 	int i;
 	long tare;
-  long calib = 13500;
+  long calib;
+  long calib_temp = 13500;
 	long wt;
 
   char w1, w0, f1, f2;
@@ -185,42 +186,49 @@ void main()
   int calib_mode = 0;
   int calib_triggered = 0;
   int stable_calib = 0;
-  long calib_temp = calib;
 	
-  int calib_up_trig = 0;
-  int calib_down_trig = 0;
-  int stable_calib_up = 0;
-  int stable_calib_down = 0;
+  int up_trig = 0;
+  int down_trig = 0;
+  int stable_up = 0;
+  int stable_down = 0;
   
-  int unit_trig = 0;
-  int stable_unit = 0;
+  int set_trig = 0;
+  int stable_set = 0;
 
   GPIO_Init(ADC_DAT_PORT, ADC_DAT_PIN, GPIO_MODE_IN_FL_NO_IT);
   GPIO_Init(CLK_OUT, GPIO_MODE_OUT_PP_HIGH_FAST);
   GPIO_WriteLow(CLK_OUT);
 
 	GPIO_Init(TARE_PORT, TARE_PIN, GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(CAL_UP_PORT, CAL_UP_PIN, GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(CAL_DOWN_PORT, CAL_DOWN_PIN, GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(UNIT_PORT, UNIT_PIN, GPIO_MODE_IN_PU_NO_IT);
+  GPIO_Init(UP_PORT, UP_PIN, GPIO_MODE_IN_PU_NO_IT);
+  GPIO_Init(DOWN_PORT, DOWN_PIN, GPIO_MODE_IN_PU_NO_IT);
+  GPIO_Init(SET_PORT, SET_PIN, GPIO_MODE_IN_PU_NO_IT);
 
   GPIO_Init(DUMMY, GPIO_MODE_OUT_PP_HIGH_FAST);
   GPIO_WriteLow(DUMMY);
 
 	display_init();
+	
+	// Attempt at display multiplexing using interrupts
   // TIM4_Init_Multiplexer();
   // enableInterrupts();
   
-  tare = read4B(0xFFF0);
-  calib = read4B(0xFFF4);
+  tare = read4B(0x4000);
+  calib = read4B(0x4004);
 
-  if ((calib > 10000) && (calib < 15000))
-  {
-    calib_temp = calib;
-  } else
+	// Section to set bounds for read values of calib and res
+  /* if ((calib < 10000) || (calib > 15000))
   {
     calib = calib_temp;
-  }
+  } else
+	{
+		calib_temp = calib;
+	}
+	
+	if ((tare < 24177340) || (tare > 25729840))
+	{
+		tare = 24379840;
+	} */
 
 	while(1)
   {
@@ -290,7 +298,7 @@ void main()
 		}
     
     // Enter Calibration mode
-    if (!(CAL_UP_PORT -> IDR & CAL_UP_PIN) & !(CAL_DOWN_PORT -> IDR & CAL_DOWN_PIN))
+    if (!(UP_PORT -> IDR & UP_PIN) & !(DOWN_PORT -> IDR & DOWN_PIN))
     {
 			if (stable_calib < 20) stable_calib ++;
 			if ((stable_calib == 20) && (!tare_triggered))
@@ -311,24 +319,26 @@ void main()
       led = 2;
 
       // Exit Calib Mode
-      if (!(UNIT_PORT -> IDR & UNIT_PIN))
+      if (!(SET_PORT -> IDR & SET_PIN))
       {
-			  if (stable_unit < 20) stable_unit ++;
-	  		if ((stable_unit == 20) && (!unit_trig))
+			  if (stable_set < 20) stable_set ++;
+	  		if ((stable_set == 20) && (!set_trig))
         {
           calib = calib_temp;
-          write4B(0xFFF4, calib);
+          write4B(0x4004, calib);
 			  	calib_mode = 0;
           blink = 0;
-				  stable_unit = 0;
+				  stable_set = 0;
           led = 0;
-  				unit_trig = 1;
+  				set_trig = 1;
 	  		}
 		  } else
       {
-	  		unit_trig = 0;
-		  	stable_unit = 0;
+	  		set_trig = 0;
+		  	stable_set = 0;
 		  }
+			
+			// Reset Calibration Value
       if (!(TARE_PORT -> IDR & TARE_PIN))
       {
 			  if (stable_tare < 20) stable_tare ++;
@@ -343,36 +353,41 @@ void main()
 	  		tare_triggered = 0;
 		  	stable_tare = 0;
   		}
-      if (!(CAL_UP_PORT -> IDR & CAL_UP_PIN))
+			
+			// Increase display value (decrease calibration value)
+      if (!(UP_PORT -> IDR & UP_PIN))
       {
-        if (stable_calib_up < 20) stable_calib_up ++;
-        if ((stable_calib_up == 20) && (!calib_up_trig))
+        if (stable_up < 20) stable_up ++;
+        if ((stable_up == 20) && (!up_trig))
         {
           if (calib < 15000) calib_temp += 100;
           else flash_over();
-          stable_calib_up = 0;
-          calib_up_trig = 1;
+          stable_up = 0;
+          up_trig = 1;
         }
       } else
       {
-        calib_up_trig = 0;
-        stable_calib_up = 0;
+        up_trig = 0;
+        stable_up = 0;
       }
-      if (!(CAL_DOWN_PORT -> IDR & CAL_DOWN_PIN))
+			
+			// Decrease display value (increase calibration value)
+      if (!(DOWN_PORT -> IDR & DOWN_PIN))
       {
-        if (stable_calib_down < 20) stable_calib_down ++;
-        if ((stable_calib_down == 20) && (!calib_down_trig))
+        if (stable_down < 20) stable_down ++;
+        if ((stable_down == 20) && (!down_trig))
         {
           if (calib > 10000) calib_temp -= 100;
           else flash_under();
-          stable_calib_down = 0;
-          calib_down_trig = 1;
+          stable_down = 0;
+          down_trig = 1;
         }
       } else
       {
-        calib_down_trig = 0;
-        stable_calib_down = 0;
+        down_trig = 0;
+        stable_down = 0;
       }
+			
       wt = res - tare;
       wt = wt / calib_temp;
       w1 = '0' + (wt / 1000) % 10;
@@ -388,8 +403,7 @@ void main()
   			if ((stable_tare == 20) && (!tare_triggered))
         {
 		  		tare = res;
-          write4B(0xFFF0, tare);
-          // tare = read4B(0x4000);
+          write4B(0x4000, tare);
 			  	stable_tare = 0;
 				  tare_triggered = 1;
   			}
@@ -400,7 +414,7 @@ void main()
   		}
     }
 
-    // Display Weight
+    // Blink Attempt
     /* if(blink == 1)
     {
       timer++;
@@ -460,7 +474,8 @@ void main()
         }
       }
     } else  */
-    {
+    // Display Weight
+		{
       switch(counter)
       {
         case 0:

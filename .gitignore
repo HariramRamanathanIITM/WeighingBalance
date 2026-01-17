@@ -13,3 +13,23 @@
 # Build directories
 Debug/
 Release/
+
+Raisonance/
+
+*.ls
+*.dep
+*.lkf
+*.spy
+*.pdb
+*.asm
+*.html
+*.txt
+*.eww
+*.ewp
+*.ewd
+*.rapp
+*.rprj
+*.pdf
+*.chm
+
+stm8af

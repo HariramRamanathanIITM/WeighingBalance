@@ -3,11 +3,11 @@
 /* Function to write a long int to flash memory */
 void write4B(uint32_t add, long val)
 {
-    // FLASH_Unlock(FLASH_MEMTYPE_DATA);
-    // while(FLASH_GetFlagStatus(FLASH_FLAG_DUL) == RESET);
+    FLASH_Unlock(FLASH_MEMTYPE_DATA);
+    while(FLASH_GetFlagStatus(FLASH_FLAG_DUL) == RESET);
     
-    FLASH_Unlock(FLASH_MEMTYPE_PROG);
-    while(FLASH_GetFlagStatus(FLASH_FLAG_PUL) == RESET);
+    // FLASH_Unlock(FLASH_MEMTYPE_PROG);
+    // while(FLASH_GetFlagStatus(FLASH_FLAG_PUL) == RESET);
 
     FLASH_ProgramByte(add, (val & 0xFF));
     while(FLASH_GetFlagStatus(FLASH_FLAG_EOP) == RESET);
@@ -25,23 +25,30 @@ void write4B(uint32_t add, long val)
 long read4B(uint32_t add)
 {
     long val = 0;
-    char a, b, c, d;
-    a = FLASH_ReadByte(add);
+    // char a, b, c, d;
+    /* a = FLASH_ReadByte(add);
     b = FLASH_ReadByte(add++);
     c = FLASH_ReadByte(add++);
-    d = FLASH_ReadByte(add++);
-    // val |= FLASH_ReadByte(add);
-    // val |= (FLASH_ReadByte(add+1) << 8);
-    // val |= (FLASH_ReadByte(add+2) << 16);
-    // val |= (FLASH_ReadByte(add+3) << 24);
-    val = (d << 24) | (c << 16) | (b << 8) | a;
+    d = FLASH_ReadByte(add++); */
+    /* val |= FLASH_ReadByte(add);
+    val |= (FLASH_ReadByte(add+1) << 8);
+    val |= (FLASH_ReadByte(add+2) << 16);
+    val |= (FLASH_ReadByte(add+3) << 24); */
+    // val = (d << 24) | (c << 16) | (b << 8) | a;
+    val = FLASH_ReadByte(add+3);
+    val <<= 8;
+    val |= FLASH_ReadByte(add+2);
+    val <<= 8;
+    val |= FLASH_ReadByte(add+1);
+    val <<= 8;
+    val |= FLASH_ReadByte(add);
     return val;
 }
 
-void delay_100us(int ms)
+void delay_100us(int t)
 {
     int i, j;
-    for(i = 0; i < ms; i++) for(j = 0; j < 34; j++);
+    for(i = 0; i < t; i++) for(j = 0; j < 34; j++);
 }
 
 void flash_over(void)
