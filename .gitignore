@@ -14,12 +14,19 @@
 Debug/
 Release/
 
+<<<<<<< HEAD
 Raisonance/
 
+=======
+>>>>>>> 217c5bf35004276e73aa63a1afea3d8b19e55cac
 *.ls
 *.dep
 *.lkf
 *.spy
+<<<<<<< HEAD
+=======
+*.stw
+>>>>>>> 217c5bf35004276e73aa63a1afea3d8b19e55cac
 *.pdb
 *.asm
 *.html
@@ -30,6 +37,10 @@ Raisonance/
 *.rapp
 *.rprj
 *.pdf
+<<<<<<< HEAD
 *.chm
 
 stm8af
+=======
+*.chm
+>>>>>>> 217c5bf35004276e73aa63a1afea3d8b19e55cac

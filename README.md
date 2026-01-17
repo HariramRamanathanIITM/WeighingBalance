@@ -26,7 +26,11 @@
 - Interrupt-Based Display
 
 ---
+<<<<<<< HEAD
 <!--
+=======
+
+>>>>>>> 217c5bf35004276e73aa63a1afea3d8b19e55cac
 ### Interrupt Based Display Multiplexing
 - Interrupt pops when setting display parameter or clocking ADC
 - Minimize how much time interrupt function takes
@@ -36,4 +40,7 @@
 - Measure how long ADC reading takes
     - Program an IO pin to pulse once at the start and then once more at the end of data fetch cycle
     - Very Important, helps a lot with display handling
+<<<<<<< HEAD
 -->
+=======
+>>>>>>> 217c5bf35004276e73aa63a1afea3d8b19e55cac

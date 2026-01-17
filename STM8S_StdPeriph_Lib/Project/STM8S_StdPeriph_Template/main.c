@@ -353,8 +353,11 @@ void main()
 	  		tare_triggered = 0;
 		  	stable_tare = 0;
   		}
+<<<<<<< HEAD
 			
 			// Increase display value (decrease calibration value)
+=======
+>>>>>>> 217c5bf35004276e73aa63a1afea3d8b19e55cac
       if (!(UP_PORT -> IDR & UP_PIN))
       {
         if (stable_up < 20) stable_up ++;
@@ -370,8 +373,11 @@ void main()
         up_trig = 0;
         stable_up = 0;
       }
+<<<<<<< HEAD
 			
 			// Decrease display value (increase calibration value)
+=======
+>>>>>>> 217c5bf35004276e73aa63a1afea3d8b19e55cac
       if (!(DOWN_PORT -> IDR & DOWN_PIN))
       {
         if (stable_down < 20) stable_down ++;
