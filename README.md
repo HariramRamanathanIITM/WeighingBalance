@@ -32,6 +32,16 @@
 - EEPROM Writing: Functional
 - Calibration mode: Functional
 
+<<<<<<< HEAD
+=======
+
+### To do
+- Tune display timer (the dummy time when no data is being fetched)
+- Blinking
+- Interrupt-Based Display
+
+<!--
+>>>>>>> eb76476e8de3bbd050ee82abcf722e811c1f7e18
 ### Interrupt Based Display Multiplexing
 - Interrupt pops when setting display parameter or clocking ADC
 - Minimize how much time interrupt function takes
